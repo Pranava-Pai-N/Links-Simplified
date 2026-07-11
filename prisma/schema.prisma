@@ -24,12 +24,13 @@ model user {
 
 model urls {
   id           String  @id
-  shortId      String  @unique
+  shortId      String?  @unique
+  customId     String?
   customDomain Boolean @default(false)
   originalURL  String
   redirectURL  String
   active       Boolean @default(true)
-  activeClicks Int
+  activeClicks Int  @default(0)
 
   // Relations
   createdBy String
