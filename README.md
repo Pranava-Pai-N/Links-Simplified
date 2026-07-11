@@ -1,3 +1,3 @@
-### This is a production grade url shortener - Built with NextJS, Prisma, NextAuth
+## This is a production grade url shortener - Built with NextJS, Prisma, NextAuth
 
-// 
+### Will be updated soon
