@@ -1,14 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
-import { Prisma } from "@/generated/prisma/client";
-import { nanoid } from "nanoid"
+import { NextResponse } from "next/server";
+// import { Prisma } from "@/generated/prisma/client";
+// import { nanoid } from "nanoid";
 
-export async function GET(request: NextRequest) {
-    return NextResponse.json({
-        "status": 200,
-        "message": "Backend is running correctly"
-    })
+export async function GET() {
+  return NextResponse.json({
+    status: 200,
+    message: "Backend is running correctly",
+  });
 }
-
 
 // export async function POST(request: NextRequest) {
 //     const body = await request.json();
@@ -36,14 +35,13 @@ export async function GET(request: NextRequest) {
 //         redirectURL = `${process.env.REDIRECT_URL}/${shortId}`
 //     }
 
-
 //     const storage = {
 //         shortId,
 //         customId,
 //         customDomain,
 //         originalURL,
 //         redirectURL,
-//         active : true,      
+//         active : true,
 //     }
 
 //     const response = await Prisma.
