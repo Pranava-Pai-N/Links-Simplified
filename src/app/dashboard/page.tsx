@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Link from "next/link";
+import axios from "axios";
 
 interface ShortLink {
   id: string;
@@ -27,6 +28,7 @@ interface ShortLink {
 
 export default function ShortenerDashboard() {
   const { data: session, status } = useSession();
+  console.log(session)
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -47,21 +49,18 @@ export default function ShortenerDashboard() {
 
   const handleCreateLink = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!urlInput) return;
+    if (!urlInput) 
+      return;
 
     setIsSubmitting(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      const response = await axios.post("/api/shortener", {
+        originalURL: urlInput,
+        custom: customDomain,
+        userId: session?.user?.email
+      }, { withCredentials: true });
+      console.log(response);
 
-      const newLink: ShortLink = {
-        id: Date.now().toString(),
-        originalUrl: urlInput,
-        shortCode: customDomain || Math.random().toString(36).substring(2, 7),
-        clicks: 0,
-        createdAt: new Date().toISOString().split("T")[0],
-      };
-
-      setLinks([newLink, ...links]);
       setUrlInput("");
       setCustomDomain("");
       setIsCreateOpen(false);
@@ -190,10 +189,6 @@ export default function ShortenerDashboard() {
                   />
                 </div>
               </div>
-              <span>
-                Sample Link : $
-                {`${process.env.NEXT_PUBLIC_REDIRECT_URL}/${customDomain}`}
-              </span>
               <div className="flex items-center justify-end gap-2 pt-2">
                 <Button
                   type="button"
