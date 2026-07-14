@@ -4,7 +4,6 @@ import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
-import Image from "next/image";
 
 
 function NavBar() {
@@ -42,7 +41,7 @@ function NavBar() {
             </p>
           </div>
           {user.image ? (
-            <Image
+            <img
               src={user?.image}
               alt="User Imahge"
               className="h-8 w-8 rounded-full border border-slate-200"

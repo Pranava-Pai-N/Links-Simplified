@@ -25,6 +25,7 @@ export default function ShortenerDashboard() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [user_details, setUser_details] = useState({})
 
   const [urlInput, setUrlInput] = useState("");
   const [customDomain, setCustomDomain] = useState("");
@@ -33,28 +34,39 @@ export default function ShortenerDashboard() {
 
   const [showPremiumPrompt, setShowPremiumPrompt] = useState(false);
 
-  const getUserLinks = async () => {
+
+
+  const fetchDashBoardData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("/api/analytics");
 
-      if (response.data?.createdurls) {
-        const allUrls = response.data.createdurls.flatMap(
+      const [analyticsRes, userRes] = await Promise.all([
+        axios.get("/api/links"),
+        axios.get("/api/me")
+      ]);
+
+      if (analyticsRes.data?.createdurls) {
+        const allUrls = analyticsRes.data.createdurls.flatMap(
           (item: any) => item.generatedUrls || [],
-        );
+        )
         setLinks(allUrls);
       }
+      
+      if(userRes.data?.user){
+        setUser_details(userRes.data?.user);
+      }
+
     } catch (error) {
-      console.error("Failed to fetch links:", error);
-      toast.error("Failed to load your shortened URLs");
+      console.error("Failed to fetch dashboard data:", error);
+      toast.error("Failed to load dashboard data");
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   useEffect(() => {
-    getUserLinks();
-  }, []);
+    fetchDashBoardData()
+  }, [])
 
   const handleToggleCreateForm = () => {
     if (!isCreateOpen && links.length >= 1) {
@@ -88,7 +100,7 @@ export default function ShortenerDashboard() {
       setIsCreateOpen(false);
       toast.success("Link shortened successfully!");
 
-      getUserLinks();
+      fetchDashBoardData();
     } catch (error: any) {
       if (
         error.response &&
