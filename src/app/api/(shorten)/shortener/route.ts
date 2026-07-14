@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 import { nanoid } from "nanoid";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 export async function GET() {
   return NextResponse.json({
@@ -12,20 +14,32 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    const session = await getServerSession(authOptions);
 
-    const { originalURL, custom, userId } = body;
+    const { originalURL, custom } = body;
 
     if (!originalURL) {
       return NextResponse.json({
-        "status": 400,
-        "success": false,
-        "message": "Please provide an url to shorten"
+        status: 400,
+        success: false,
+        message: "Please provide an url to shorten"
       })
     }
 
-    if (!userId) {
+    if (!session || !session.user?.email) {
       return NextResponse.json(
         { success: false, message: "Not authenticated" },
+        { status: 401 }
+      );
+    }
+
+    const user = await prisma.user.findFirst({
+      where: { emailId: session?.user?.email }
+    })
+
+    if (!user) {
+      return NextResponse.json(
+        { success: false, message: "User not found" },
         { status: 401 }
       );
     }
@@ -67,7 +81,7 @@ export async function POST(request: NextRequest) {
         originalURL,
         redirectURL,
         active: true,
-        createdBy: userId
+        createdBy: user?.id
       }
     });
 

@@ -53,47 +53,6 @@ export default function SimpleShortener() {
     <div className="relative min-h-screen flex flex-col bg-slate-50/60 overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-70 pointer-events-none" />
 
-      <header className="z-10 sticky top-0 border-b border-slate-200/80 bg-white/80 backdrop-blur-md px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Link
-            href={"/"}
-            className="font-semibold text-slate-900 tracking-tight"
-          >
-            Links Simplified
-          </Link>
-        </div>
-
-        <div className="flex items-center gap-4">
-          {status === "loading" ? (
-            <Loader2 className="h-4 w-4 animate-spin text-slate-400" />
-          ) : session?.user ? (
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-medium text-slate-500 hidden sm:inline">
-                {session.user.email}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => signOut()}
-                className="h-8 gap-1.5 text-slate-600 hover:text-rose-600 border-slate-200"
-              >
-                <LogOut className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Sign out</span>
-              </Button>
-            </div>
-          ) : (
-            <Button
-              size="sm"
-              onClick={() => router.push("/sign-in")}
-              className="h-8 bg-blue-600 hover:bg-blue-700 text-white gap-1.5 shadow-sm active:scale-[0.98] transition-all"
-            >
-              <LogIn className="h-3.5 w-3.5" />
-              Login
-            </Button>
-          )}
-        </div>
-      </header>
-
       <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-16 text-center max-w-2xl mx-auto w-full">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl mb-4 text-slate-900">
           Short links,{" "}
