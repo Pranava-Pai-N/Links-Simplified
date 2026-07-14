@@ -1,9 +1,9 @@
-import { NextResponse, type NextRequest } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { nanoid } from "nanoid";
+import { type NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
+import { prisma } from "@/lib/prisma";
+import inputValidation, { type userInput } from "@/lib/validations/customUrls";
 import { authOptions } from "../../auth/[...nextauth]/route";
-import inputValidation, { userInput } from "@/lib/validations/customUrls";
 
 export async function GET() {
   return NextResponse.json({
@@ -24,37 +24,37 @@ export async function POST(request: NextRequest) {
         status: 400,
         success: false,
         message: "Validation errors",
-        errors: result.error.flatten().formErrors
-      })
+        errors: result.error.flatten().formErrors,
+      });
     }
 
     const validatedData: userInput = result.data;
 
-    const { originalURL, custom } = validatedData
+    const { originalURL, custom } = validatedData;
 
     if (!originalURL) {
       return NextResponse.json({
         status: 400,
         success: false,
-        message: "Please provide an url to shorten"
-      })
+        message: "Please provide an url to shorten",
+      });
     }
 
     if (!session || !session.user?.email) {
       return NextResponse.json(
         { success: false, message: "Not authenticated" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
     const user = await prisma.user.findFirst({
-      where: { emailId: session?.user?.email }
-    })
+      where: { emailId: session?.user?.email },
+    });
 
     if (!user) {
       return NextResponse.json(
         { success: false, message: "User not found" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -64,26 +64,27 @@ export async function POST(request: NextRequest) {
     let redirectURL = "";
 
     if (custom && custom.trim() !== "") {
-      customId = custom,
-        customDomain = true
-      redirectURL = `${process.env.REDIRECT_URL}/${customId}`
+      customId = custom
+      customDomain = true
+      redirectURL = `${process.env.REDIRECT_URL}/${customId}`;
 
       const existingfirst = await prisma.urls.findFirst({
-        where: { customId }
+        where: { customId },
       });
 
       if (existingfirst) {
         return NextResponse.json(
-          { success: false, message: "Custom domain is already taken. Please take a new domain" },
-          { status: 400 }
+          {
+            success: false,
+            message: "Custom domain is already taken. Please take a new domain",
+          },
+          { status: 400 },
         );
       }
-
-    }
-    else {
+    } else {
       shortId = nanoid(6);
-      customDomain = false
-      redirectURL = `${process.env.REDIRECT_URL}/${shortId}`
+      customDomain = false;
+      redirectURL = `${process.env.REDIRECT_URL}/${shortId}`;
     }
 
     const response = await prisma.urls.create({
@@ -95,20 +96,27 @@ export async function POST(request: NextRequest) {
         originalURL,
         redirectURL,
         active: true,
-        createdBy: user?.id
-      }
+        createdBy: user?.id,
+      },
     });
 
     return NextResponse.json(
-      { success: true, message: "Short URL generated successfully", data: response },
-      { status: 201 }
+      {
+        success: true,
+        message: "Short URL generated successfully",
+        data: response,
+      },
+      { status: 201 },
     );
-
   } catch (error) {
     console.error("Failed to generate shortened URL:", error);
     return NextResponse.json(
-      { success: false, message: "An unexpected error occurred on the server", error },
-      { status: 500 }
+      {
+        success: false,
+        message: "An unexpected error occurred on the server",
+        error,
+      },
+      { status: 500 },
     );
   }
 }

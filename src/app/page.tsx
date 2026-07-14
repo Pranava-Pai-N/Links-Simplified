@@ -1,19 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { Copy, Check, Loader2, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-  Copy,
-  Check,
-  LogOut,
-  LogIn,
-  Loader2,
-  ArrowRight,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 export default function SimpleShortener() {
   const [url, setUrl] = useState("");
@@ -21,7 +13,7 @@ export default function SimpleShortener() {
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
 
   const handleShorten = (e: React.FormEvent) => {

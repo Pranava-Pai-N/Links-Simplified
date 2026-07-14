@@ -1,6 +1,6 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, { type NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -9,28 +9,27 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
   ],
-  session : {
-    maxAge : 24 * 60 * 60 , // 24 hours
+  session: {
+    maxAge: 24 * 60 * 60, // 24 hours
   },
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === "google" && user.email) {
         try {
           const existingUser = await prisma.user.findFirst({
-            where: { emailId: user.email }
+            where: { emailId: user.email },
           });
 
           if (existingUser) {
             return true;
           }
 
-          const response = await prisma.user.create({
+          const _response = await prisma.user.create({
             data: {
               name: user.name,
-              emailId: user.email
-            }
-          })
-
+              emailId: user.email,
+            },
+          });
         } catch (error) {
           console.error("Database registration failed:", error);
           return false;

@@ -5,39 +5,37 @@ import {
   ArrowLeft,
   Globe,
   BarChart,
-  Infinity
+  Infinity,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 function PremiumPage() {
-
   const humanFeatures = [
     {
       icon: <Infinity className="h-5 w-5 text-indigo-500" />,
       title: "Create without limits",
-      desc: "Shorten as many links as your campaigns demand."
+      desc: "Shorten as many links as your campaigns demand.",
     },
     {
       icon: <Globe className="h-5 w-5 text-emerald-500" />,
       title: "Look professional with your own domain",
-      desc: "Replace our brand with yours (e.g., brand.link/slug) to build 34% more trust."
+      desc: "Replace our brand with yours (e.g., brand.link/slug) to build 34% more trust.",
     },
     {
       icon: <BarChart className="h-5 w-5 text-blue-500" />,
       title: "See who's clicking & where",
-      desc: "Deep-dive analytics showing countries, devices, and top-referring sites."
-    }
+      desc: "Deep-dive analytics showing countries, devices, and top-referring sites.",
+    },
   ];
 
-
-  const handleUpgrade = () => {
-    console.log("Initiating billing...");
-  };
+  // TODO: To be implemented using razorpay
+  // const handleUpgrade = () => {
+  //   console.log("Initiating billing...");
+  // };
 
   return (
     <div className="min-h-screen bg-slate-50/50 flex flex-col justify-between p-4 md:p-8 selection:bg-indigo-100 selection:text-indigo-900">
-
       <header className="max-w-4xl w-full mx-auto flex items-center justify-between py-4">
         <Link
           href={"/dashboard"}
@@ -52,7 +50,6 @@ function PremiumPage() {
       </header>
 
       <main className="max-w-4xl w-full mx-auto my-auto py-8 grid md:grid-cols-12 gap-8 items-center">
-
         <div className="md:col-span-7 space-y-8 pr-0 md:pr-4">
           <div className="space-y-3">
             <span className="inline-flex items-center gap-1 text-xs font-bold tracking-wider text-indigo-600 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full uppercase">
@@ -62,7 +59,8 @@ function PremiumPage() {
               Ready to take your links to the next level?
             </h1>
             <p className="text-base md:text-lg text-slate-500 leading-relaxed">
-              Hitting your free cap is a great sign - it means your audience is responding. Upgrade today to keep that momentum going strong.
+              Hitting your free cap is a great sign - it means your audience is
+              responding. Upgrade today to keep that momentum going strong.
             </p>
           </div>
 
@@ -89,7 +87,6 @@ function PremiumPage() {
           <div className="absolute -inset-1 bg-linear-to-r from-blue-500 to-indigo-500 rounded-3xl blur opacity-15"></div>
 
           <div className="relative bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-xl space-y-6">
-
             <div className="space-y-1">
               <h3 className="font-bold text-slate-900 text-lg">
                 Premium Monthly
@@ -100,8 +97,12 @@ function PremiumPage() {
             </div>
 
             <div className="flex items-baseline gap-1 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-              <span className="text-4xl font-extrabold text-slate-950">500</span>
-              <span className="text-slate-500 text-sm font-medium">&#8377;month</span>
+              <span className="text-4xl font-extrabold text-slate-950">
+                500
+              </span>
+              <span className="text-slate-500 text-sm font-medium">
+                &#8377;month
+              </span>
               <span className="ml-auto text-[10px] font-bold text-emerald-700 bg-emerald-100/60 px-2.5 py-1 rounded-full">
                 Cancel Anytime
               </span>
@@ -116,9 +117,12 @@ function PremiumPage() {
                   "Unlimited Link Creational Power",
                   "Professional Custom Domains",
                   "Geographic & Device Analytics",
-                  "Empathetic Support"
+                  "Empathetic Support",
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-2 text-xs text-slate-600">
+                  <li
+                    key={i}
+                    className="flex items-center gap-2 text-xs text-slate-600"
+                  >
                     <div className="h-4 w-4 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
                       <Check className="h-2.5 w-2.5 stroke-3" />
                     </div>
@@ -130,7 +134,7 @@ function PremiumPage() {
 
             <div className="space-y-2 pt-2">
               <Button
-                onClick={handleUpgrade}
+                // onClick={handleUpgrade}
                 className="w-full py-6 rounded-2xl bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold transition-all shadow-md shadow-indigo-600/10 hover:shadow-indigo-600/20 active:scale-[0.98] flex items-center justify-center gap-2"
               >
                 Upgrade My Account
@@ -142,7 +146,6 @@ function PremiumPage() {
             </div>
           </div>
         </div>
-
       </main>
     </div>
   );

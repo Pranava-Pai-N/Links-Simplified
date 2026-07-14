@@ -1,23 +1,22 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useSession, signOut } from "next-auth/react";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 import {
   Link2,
   Plus,
   ExternalLink,
   Copy,
   Check,
-  LogOut,
   Loader2,
   BarChart3,
   Calendar,
 } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import Link from "next/link";
-import axios from "axios";
-import { ShortLink } from "@/lib/types/shortLink"
+import { ShortLink } from "@/lib/types/shortLink";
+import React, { useEffect, useState } from "react";
 
 export default function ShortenerDashboard() {
   const { data: session, status } = useSession();
@@ -39,11 +38,10 @@ export default function ShortenerDashboard() {
       setLoading(true);
       const response = await axios.get("/api/analytics");
 
-      if (response.data && response.data.createdurls) {
+      if (response.data?.createdurls) {
         const allUrls = response.data.createdurls.flatMap(
-          (item: any) => item.generatedUrls || []
+          (item: any) => item.generatedUrls || [],
         );
-        console.log(allUrls)
         setLinks(allUrls);
       }
     } catch (error) {
@@ -70,8 +68,7 @@ export default function ShortenerDashboard() {
 
   const handleCreateLink = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!urlInput)
-      return;
+    if (!urlInput) return;
 
     if (links.length >= 1) {
       setShowPremiumPrompt(true);
@@ -93,13 +90,15 @@ export default function ShortenerDashboard() {
 
       getUserLinks();
     } catch (error: any) {
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         toast.error(`${error?.response?.data?.message}`);
-      }
-      else {
+      } else {
         toast.error(`Failed to create short link.`);
       }
-
     } finally {
       setIsSubmitting(false);
       setLoading(false);
@@ -155,7 +154,9 @@ export default function ShortenerDashboard() {
                 Free Tier Reached
               </div>
               <p className="text-xs text-slate-600 max-w-xl">
-                You have reached your tier usage restrictions. Upgrade to Premium Plan to build unlimited URLs, map brand domains, and access real-time geo-analytics tracking telemetry.
+                You have reached your tier usage restrictions. Upgrade to
+                Premium Plan to build unlimited URLs, map brand domains, and
+                access real-time geo-analytics tracking telemetry.
               </p>
             </div>
             <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
@@ -255,12 +256,16 @@ export default function ShortenerDashboard() {
             </div>
           ) : (
             links.map((link) => {
-              const displaySlug = link.customId || link.shortId || "Default Alias";
-              const formattedDate = new Date(link.createdAt).toLocaleDateString(undefined, {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-              });
+              const displaySlug =
+                link.customId || link.shortId || "Default Alias";
+              const formattedDate = new Date(link.createdAt).toLocaleDateString(
+                undefined,
+                {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                },
+              );
 
               return (
                 <div
@@ -284,7 +289,8 @@ export default function ShortenerDashboard() {
                     <div className="flex items-center gap-4 text-xs text-slate-400 pt-1">
                       <span className="flex items-center gap-1">
                         <BarChart3 className="h-3 w-3" />
-                        {link.activeClicks} {link.activeClicks === 1 ? "click" : "clicks"}
+                        {link.activeClicks}{" "}
+                        {link.activeClicks === 1 ? "click" : "clicks"}
                       </span>
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />

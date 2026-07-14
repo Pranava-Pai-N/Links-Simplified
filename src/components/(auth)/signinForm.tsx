@@ -4,13 +4,11 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import axios from "axios";
-import { useSession } from "next-auth/react"
-
+import { useSession } from "next-auth/react";
 
 export default function SignInForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const session = useSession();
+  const _session = useSession();
 
   const handleSignIn = async () => {
     try {

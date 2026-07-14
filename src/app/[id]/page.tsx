@@ -1,29 +1,28 @@
 "use client";
 
+import axios from "axios";
+import { AlertCircle, Loader2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Loader2, AlertCircle } from "lucide-react";
-import axios from "axios";
 
 export default function LinkAnalytics() {
   const params = useParams();
   const router = useRouter();
-  
+
   const id = params?.id;
-  
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const handleRedirect = async () => {
-      if (!id || id === "undefined") 
-        return;
+      if (!id || id === "undefined") return;
 
       try {
         setLoading(true);
         const response = await axios.post(`/api/${id}`);
-        
-        if (response.data && response.data.originalURL) {
+
+        if (response.data?.originalURL) {
           window.location.href = response.data.originalURL;
         } else {
           setError("Destination URL not found.");
@@ -32,7 +31,7 @@ export default function LinkAnalytics() {
       } catch (err: any) {
         console.error("Redirect failed:", err);
         setError(
-          err.response?.data?.error || "This link is broken or has expired."
+          err.response?.data?.error || "This link is broken or has expired.",
         );
         setLoading(false);
       }
@@ -68,11 +67,10 @@ export default function LinkAnalytics() {
             <h2 className="text-xl font-bold text-slate-900 tracking-tight">
               Link Unavailable
             </h2>
-            <p className="text-sm text-slate-500 mt-2">
-              {error}
-            </p>
+            <p className="text-sm text-slate-500 mt-2">{error}</p>
           </div>
           <button
+            type="button"
             onClick={() => router.push("/")}
             className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium text-sm py-2.5 px-4 rounded-xl transition-all"
           >
