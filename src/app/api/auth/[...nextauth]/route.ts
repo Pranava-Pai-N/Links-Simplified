@@ -10,7 +10,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: {
-    maxAge: 24 * 60 * 60, // 24 hours
+    maxAge: 60 * 60, // 1 hour
   },
   callbacks: {
     async signIn({ user, account }) {
