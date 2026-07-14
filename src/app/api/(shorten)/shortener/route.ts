@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { nanoid } from "nanoid";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]/route";
+import inputValidation, { userInput } from "@/lib/validations/customUrls";
 
 export async function GET() {
   return NextResponse.json({
@@ -16,7 +17,20 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const session = await getServerSession(authOptions);
 
-    const { originalURL, custom } = body;
+    const result = inputValidation.safeParse(body);
+
+    if (!result.success) {
+      return NextResponse.json({
+        status: 400,
+        success: false,
+        message: "Validation errors",
+        errors: result.error.flatten().formErrors
+      })
+    }
+
+    const validatedData: userInput = result.data;
+
+    const { originalURL, custom } = validatedData
 
     if (!originalURL) {
       return NextResponse.json({

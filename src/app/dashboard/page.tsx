@@ -17,18 +17,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Link from "next/link";
 import axios from "axios";
-
-interface ShortLink {
-  id: string;
-  originalURL: string;
-  redirectURL: string;
-  customId: string | null;
-  shortId: string | null;
-  activeClicks: number;
-  createdAt: string;
-  active: boolean;
-  customDomain: boolean;
-}
+import { ShortLink } from "@/lib/types/shortLink"
 
 export default function ShortenerDashboard() {
   const { data: session, status } = useSession();
