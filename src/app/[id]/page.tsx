@@ -11,7 +11,7 @@ export default function LinkAnalytics() {
 
   const id = params?.id;
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {

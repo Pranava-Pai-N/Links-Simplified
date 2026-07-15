@@ -14,11 +14,13 @@ export async function POST(request: NextRequest, { params }: routeParams) {
     const id = resolvedParams.id;
 
     if (!id) {
-      return NextResponse.json({
-        status: 400,
-        success: false,
-        message: "Please provide an id to redirect to large url",
-      });
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Please provide an id to redirect to large url",
+        },
+        { status: 400 },
+      );
     }
 
     const urlId = Array.isArray(id) ? id[0] : id;

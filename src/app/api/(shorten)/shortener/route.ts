@@ -6,10 +6,12 @@ import inputValidation, { type userInput } from "@/lib/validations/customUrls";
 import { authOptions } from "../../auth/[...nextauth]/route";
 
 export async function GET() {
-  return NextResponse.json({
-    status: 200,
-    message: "Backend is running correctly",
-  });
+  return NextResponse.json(
+    {
+      message: "Backend is running correctly",
+    },
+    { status: 200 },
+  );
 }
 
 export async function POST(request: NextRequest) {
@@ -20,12 +22,14 @@ export async function POST(request: NextRequest) {
     const result = inputValidation.safeParse(body);
 
     if (!result.success) {
-      return NextResponse.json({
-        status: 400,
-        success: false,
-        message: "Validation errors",
-        errors: result.error.flatten().formErrors,
-      });
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Validation errors",
+          errors: result.error.flatten().formErrors,
+        },
+        { status: 400 },
+      );
     }
 
     const validatedData: userInput = result.data;
@@ -33,11 +37,13 @@ export async function POST(request: NextRequest) {
     const { originalURL, custom } = validatedData;
 
     if (!originalURL) {
-      return NextResponse.json({
-        status: 400,
-        success: false,
-        message: "Please provide an url to shorten",
-      });
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Please provide an url to shorten",
+        },
+        { status: 400 },
+      );
     }
 
     if (!session || !session.user?.email) {
@@ -64,8 +70,8 @@ export async function POST(request: NextRequest) {
     let redirectURL = "";
 
     if (custom && custom.trim() !== "") {
-      customId = custom
-      customDomain = true
+      customId = custom;
+      customDomain = true;
       redirectURL = `${process.env.REDIRECT_URL}/${customId}`;
 
       const existingfirst = await prisma.urls.findFirst({

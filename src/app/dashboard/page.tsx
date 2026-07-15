@@ -11,13 +11,14 @@ import {
   Loader2,
   BarChart3,
   Calendar,
-  Crown
+  Crown,
+  IndianRupeeIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ShortLink } from "@/lib/types/shortLink";
-import { type User } from "@/lib/types/user"
+import { type User } from "@/lib/types/user";
 import React, { useEffect, useState } from "react";
 
 export default function ShortenerDashboard() {
@@ -57,7 +58,6 @@ export default function ShortenerDashboard() {
         const user = userRes.data?.user;
         setUser_details(user);
 
-
         if (user && user.isPremium) {
           const today = new Date();
           const validTill = new Date(user.validTill);
@@ -89,8 +89,7 @@ export default function ShortenerDashboard() {
 
   const handleCreateLink = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!urlInput)
-      return;
+    if (!urlInput) return;
 
     if (!isPremiumUser && links.length >= 1) {
       setShowPremiumPrompt(true);
@@ -166,20 +165,28 @@ export default function ShortenerDashboard() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex flex-wrap items-center gap-3 shrink-0">
           {!isPremiumUser && (
             <Link
               href="/premium"
-              className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold px-4 py-2.5 rounded-xl border border-amber-200/50 bg-linear-to-r from-amber-50 to-orange-50 text-amber-800 hover:from-amber-100 hover:to-orange-100 hover:scale-[1.02] active:scale-[0.98] shadow-xs transition-all duration-200"
+              className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold px-4 py-2.5 rounded-xl border border-amber-200/60 dark:border-amber-500/20 bg-linear-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 text-amber-800 dark:text-amber-400 hover:from-amber-100 hover:to-orange-100 dark:hover:from-amber-950/30 dark:hover:to-orange-950/30 hover:scale-[1.02] active:scale-[0.98] shadow-xs transition-all duration-200"
             >
-              <Crown className="h-3.5 w-3.5 text-amber-600 fill-amber-500/10 stroke-[2.5]" />
+              <Crown className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400 fill-amber-500/10 stroke-[2.5]" />
               Go Premium
             </Link>
           )}
 
+          <Link
+            href="/payments"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 hover:scale-[1.02] active:scale-[0.98] shadow-xs transition-all duration-200"
+          >
+            <IndianRupeeIcon className="h-3.5 w-3.5 text-slate-500 dark:text-slate-400" />
+            View Payments
+          </Link>
+
           <Button
             onClick={handleToggleCreateForm}
-            className="bg-blue-600 hover:bg-blue-700 text-white gap-2 px-4 py-2.5 text-xs font-semibold rounded-xl shadow-xs hover:shadow-md hover:shadow-blue-500/10 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+            className="bg-blue-600 hover:bg-blue-700 text-white gap-2 px-4 py-2.5 text-xs font-semibold rounded-xl shadow-xs hover:shadow-lg hover:shadow-blue-500/10 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
           >
             <Plus className="h-4 w-4" />
             Shorten Link

@@ -15,11 +15,11 @@ import Script from "next/script";
 import axios from "axios";
 import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 
 declare global {
   interface Window {
-    Razorpay: any
+    Razorpay: any;
   }
 }
 
@@ -40,17 +40,17 @@ function PremiumPage() {
         if (user && user.isPremium) {
           const dateNow = new Date();
           const validTill = new Date(user.validTill);
-          setisPremium(validTill >= dateNow)
+          setisPremium(validTill >= dateNow);
         }
       } catch (error) {
         console.error("Error verifying current plan:", error);
       } finally {
         setIsLoadingUser(false);
       }
-    }
+    };
 
     getUserDetails();
-  }, [])
+  }, []);
 
   const humanFeatures = [
     {
@@ -73,18 +73,20 @@ function PremiumPage() {
   const createOrder = async () => {
     try {
       const orderObject = await axios.post("/api/checkout", {
-        amount: amount * 100
+        amount: amount * 100,
       });
 
-      const id = orderObject.data.order.id
+      const id = orderObject.data.order.id;
       orderIdRef.current = id;
       return id;
-
     } catch (error) {
-      console.error("There was a problem creating the order. Try again later:", error);
-      return null
+      console.error(
+        "There was a problem creating the order. Try again later:",
+        error,
+      );
+      return null;
     }
-  }
+  };
 
   const handleUpgrade = async () => {
     if (!sdkLoaded || !window.Razorpay) {
@@ -101,7 +103,7 @@ function PremiumPage() {
       let orderId = orderIdRef.current;
 
       if (!orderId) {
-        orderId = await createOrder();   // Create a orderId if not exists
+        orderId = await createOrder(); // Create a orderId if not exists
       }
 
       if (!orderId) {
@@ -109,13 +111,13 @@ function PremiumPage() {
         return;
       }
 
-
       const paymentOptions = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_API_KEY!,
-        amount: amount * 100,  // IN PAISE
+        amount: amount * 100, // IN PAISE
         currency: "INR",
         name: "Links Simpified - Premium Subscription",
-        description: "1 Month Premium Plan Upgrade for Links Simplified Service",
+        description:
+          "1 Month Premium Plan Upgrade for Links Simplified Service",
         order_id: orderId,
 
         handler: async function (response: any) {
@@ -123,31 +125,34 @@ function PremiumPage() {
             const verifyPayment = await axios.post("/api/verify", {
               razorpayOrderId: response.razorpay_order_id,
               razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature
+              razorpaySignature: response.razorpay_signature,
             });
 
             if (verifyPayment.data && verifyPayment.data.success) {
               toast.success("Payment has been submitted successfuly");
               orderIdRef.current = null;
-              router.push("/dashboard")
-            }
-            else {
-              toast.error("Payment verification failed. Please check with your bank.");
+              router.push("/dashboard");
+            } else {
+              toast.error(
+                "Payment verification failed. Please check with your bank.",
+              );
             }
           } catch (verifyError) {
             console.error("Verification endpoint error:", verifyError);
-            toast.error("Unable to verify payment status. Please contact support.");
+            toast.error(
+              "Unable to verify payment status. Please contact support.",
+            );
           }
         },
 
         prefill: {
           name: "Pranava Pai N",
-          email: "pranavpai0309@gmail.com"
+          email: "pranavpai0309@gmail.com",
         },
         theme: {
-          color: "#4f46e5"
-        }
-      }
+          color: "#4f46e5",
+        },
+      };
 
       const rzpWindow = new window.Razorpay(paymentOptions);
 
@@ -155,20 +160,22 @@ function PremiumPage() {
         const err = response.error || [];
 
         if (err.reason === "payment_cancelled") {
-          toast.warning("Payment cancelled. You can try again whenever you're ready!");
+          toast.warning(
+            "Payment cancelled. You can try again whenever you're ready!",
+          );
           return;
         }
 
-        toast.error(`Payment failed: ${err.description || "Something went wrong"}`);
+        toast.error(
+          `Payment failed: ${err.description || "Something went wrong"}`,
+        );
       });
 
-      rzpWindow.open()
-
+      rzpWindow.open();
     } catch (error) {
       console.error(error);
     }
   };
-
 
   return (
     <div className="min-h-screen bg-slate-50/50 flex flex-col justify-between p-4 md:p-8 selection:bg-indigo-100 selection:text-indigo-900">
@@ -242,9 +249,7 @@ function PremiumPage() {
               <span className="text-4xl font-extrabold text-slate-950">
                 &#8377;500
               </span>
-              <span className="text-slate-500 text-sm font-medium">
-                /month
-              </span>
+              <span className="text-slate-500 text-sm font-medium">/month</span>
               <span className="ml-auto text-[10px] font-bold text-emerald-700 bg-emerald-100/60 px-2.5 py-1 rounded-full">
                 No Refunds
               </span>
@@ -278,10 +283,11 @@ function PremiumPage() {
               <Button
                 onClick={handleUpgrade}
                 disabled={isPremium || isLoadingUser}
-                className={`w-full py-6 rounded-2xl font-semibold transition-all shadow-md active:scale-[0.98] flex items-center justify-center gap-2 ${isPremium
-                  ? "bg-emerald-600 hover:bg-emerald-600 cursor-not-allowed text-white shadow-emerald-600/10"
-                  : "bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white shadow-indigo-600/10 hover:shadow-indigo-600/20"
-                  }`}
+                className={`w-full py-6 rounded-2xl font-semibold transition-all shadow-md active:scale-[0.98] flex items-center justify-center gap-2 ${
+                  isPremium
+                    ? "bg-emerald-600 hover:bg-emerald-600 cursor-not-allowed text-white shadow-emerald-600/10"
+                    : "bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white shadow-indigo-600/10 hover:shadow-indigo-600/20"
+                }`}
               >
                 {isLoadingUser ? (
                   <>
