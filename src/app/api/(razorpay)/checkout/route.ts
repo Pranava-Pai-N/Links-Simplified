@@ -1,5 +1,3 @@
-// Razorpay logic - TODO: Will be implemented in phase 2
-
 import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
 import razorpay from "razorpay";
@@ -64,7 +62,7 @@ export async function POST(req: NextRequest) {
         const receipt_id = `Receipt-${nanoid(10)}`
 
         const razorpayOrder = await instance.orders.create({
-            "amount": Math.round(Number(amount) * 100),
+            "amount": Number(amount),
             "currency": "INR",
             "receipt": receipt_id,
         });
@@ -72,7 +70,7 @@ export async function POST(req: NextRequest) {
         await prisma.payments.create({
             data: {
                 orderId: razorpayOrder.id,
-                amount: Math.round(Number(amount) * 100),
+                amount: Number(amount),
                 status: "PENDING",
                 receipt: receipt_id,
                 paidBy: user.id

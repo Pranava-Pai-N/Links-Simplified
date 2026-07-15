@@ -11,11 +11,13 @@ import {
   Loader2,
   BarChart3,
   Calendar,
+  Crown
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ShortLink } from "@/lib/types/shortLink";
+import { type User } from "@/lib/types/user"
 import React, { useEffect, useState } from "react";
 
 export default function ShortenerDashboard() {
@@ -25,7 +27,8 @@ export default function ShortenerDashboard() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [user_details, setUser_details] = useState({})
+  const [user_details, setUser_details] = useState<User | null>(null);
+  const [isPremiumUser, setisPremiumUser] = useState<boolean>(false);
 
   const [urlInput, setUrlInput] = useState("");
   const [customDomain, setCustomDomain] = useState("");
@@ -34,42 +37,48 @@ export default function ShortenerDashboard() {
 
   const [showPremiumPrompt, setShowPremiumPrompt] = useState(false);
 
-
-
   const fetchDashBoardData = async () => {
     try {
       setLoading(true);
 
       const [analyticsRes, userRes] = await Promise.all([
         axios.get("/api/links"),
-        axios.get("/api/me")
+        axios.get("/api/me"),
       ]);
 
       if (analyticsRes.data?.createdurls) {
         const allUrls = analyticsRes.data.createdurls.flatMap(
           (item: any) => item.generatedUrls || [],
-        )
+        );
         setLinks(allUrls);
       }
-      
-      if(userRes.data?.user){
-        setUser_details(userRes.data?.user);
-      }
 
+      if (userRes.data?.user) {
+        const user = userRes.data?.user;
+        setUser_details(user);
+
+
+        if (user && user.isPremium) {
+          const today = new Date();
+          const validTill = new Date(user.validTill);
+
+          setisPremiumUser(validTill >= today);
+        }
+      }
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
       toast.error("Failed to load dashboard data");
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchDashBoardData()
-  }, [])
+    fetchDashBoardData();
+  }, []);
 
   const handleToggleCreateForm = () => {
-    if (!isCreateOpen && links.length >= 1) {
+    if (!isPremiumUser && !isCreateOpen && links.length >= 1) {
       setShowPremiumPrompt(true);
       setIsCreateOpen(false);
     } else {
@@ -80,9 +89,10 @@ export default function ShortenerDashboard() {
 
   const handleCreateLink = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!urlInput) return;
+    if (!urlInput)
+      return;
 
-    if (links.length >= 1) {
+    if (!isPremiumUser && links.length >= 1) {
       setShowPremiumPrompt(true);
       return;
     }
@@ -136,30 +146,47 @@ export default function ShortenerDashboard() {
     );
   }
 
-  const user = session?.user;
-
   return (
     <div className="min-h-screen bg-slate-50/60 flex flex-col">
       <main className="flex-1 max-w-5xl w-full mx-auto p-6 md:p-8 space-y-6">
-        <div className="flex items-center justify-between border-b border-slate-200 pb-5">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
               Your Links
             </h1>
-            <p className="text-sm text-slate-500">
-              Manage, track, and deploy your shortened routing rules.
-            </p>
+            {isPremiumUser && (
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold tracking-wider text-amber-700 bg-amber-50 border border-amber-200/60 px-2.5 py-0.5 rounded-full uppercase shadow-xs">
+                <Crown className="h-2.5 w-2.5 fill-amber-500/10 stroke-[2.5]" />
+                Pro User
+              </span>
+            )}
           </div>
+          <p className="text-xs md:text-sm text-slate-500 max-w-md leading-relaxed">
+            Manage, track, and deploy your shortened routing rules.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 shrink-0">
+          {!isPremiumUser && (
+            <Link
+              href="/premium"
+              className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold px-4 py-2.5 rounded-xl border border-amber-200/50 bg-linear-to-r from-amber-50 to-orange-50 text-amber-800 hover:from-amber-100 hover:to-orange-100 hover:scale-[1.02] active:scale-[0.98] shadow-xs transition-all duration-200"
+            >
+              <Crown className="h-3.5 w-3.5 text-amber-600 fill-amber-500/10 stroke-[2.5]" />
+              Go Premium
+            </Link>
+          )}
+
           <Button
             onClick={handleToggleCreateForm}
-            className="bg-blue-600 hover:bg-blue-700 text-white gap-2 shadow-sm transition-all"
+            className="bg-blue-600 hover:bg-blue-700 text-white gap-2 px-4 py-2.5 text-xs font-semibold rounded-xl shadow-xs hover:shadow-md hover:shadow-blue-500/10 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
           >
             <Plus className="h-4 w-4" />
             Shorten Link
           </Button>
         </div>
 
-        {showPremiumPrompt && (
+        {!isPremiumUser && (
           <div className="bg-linear-to-r from-amber-50 to-orange-50 border border-amber-200 p-6 rounded-xl shadow-sm transition-all animate-in fade-in slide-in-from-top-2 duration-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-amber-800 font-semibold text-sm">
@@ -183,7 +210,7 @@ export default function ShortenerDashboard() {
               <Link
                 href={"/premium"}
                 onClick={handleUpgradeToPremium}
-                className="bg-amber-600 hover:bg-amber-700 text-white text-xs gap-1.5 font-medium shadow-sm w-1/2 sm:w-auto"
+                className="bg-amber-600 hover:bg-amber-700 text-white text-xs gap-1.5 font-medium shadow-sm w-1/2 sm:w-auto flex items-center justify-center py-2 px-3 rounded-md"
               >
                 Upgrade for &#8377;500/mo
               </Link>

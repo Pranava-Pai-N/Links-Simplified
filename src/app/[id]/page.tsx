@@ -49,7 +49,7 @@ export default function LinkAnalytics() {
             Redirecting you...
           </h2>
           <p className="text-sm text-slate-500">
-            Hold tight, we are routing your destination safely.
+            Hold tight, we are routing to your destination safely.
           </p>
         </div>
       </div>

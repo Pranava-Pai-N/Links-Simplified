@@ -33,7 +33,7 @@ export default function Footer() {
               href="/premium"
               className="text-amber-600 hover:text-amber-700 font-semibold transition-colors"
             >
-              Premium
+              Go Premium
             </Link>
           </div>
 

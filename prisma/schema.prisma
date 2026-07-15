@@ -21,6 +21,7 @@ model user {
   generatedUrls urls[]
   payments      Payments[]
   isPremium     Boolean    @default(false)
+  validTill     DateTime?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 }
@@ -47,7 +48,7 @@ model Payments {
   orderId          String        @id @default(uuid())
   gatewayPaymentId String?       @unique // For webhooks
   provider         String        @default("Razorpay")
-  amount           Float
+  amount           Int
   currency         String        @default("INR")
   status           PaymentStatus @default(PENDING)
   hostedInvoiceUrl String? // PDF Link by razorpay
@@ -68,5 +69,4 @@ enum PaymentStatus {
   PENDING
   SUCCESS
   FAILED
-  REFUNDED
 }
