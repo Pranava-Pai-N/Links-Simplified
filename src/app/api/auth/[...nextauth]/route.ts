@@ -33,6 +33,7 @@ export const authOptions: NextAuthOptions = {
             data: {
               name: user.name,
               emailId: user.email,
+              profileImage: user.image
             },
           });
         } catch (error) {
@@ -53,6 +54,7 @@ export const authOptions: NextAuthOptions = {
             data: {
               name: user.name,
               emailId: user.email,
+              profileImage: user.image
             },
           });
         } catch (error) {
