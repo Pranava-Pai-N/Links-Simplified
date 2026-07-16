@@ -21,6 +21,7 @@ model user {
   profileImage  String?
   generatedUrls urls[]
   payments      Payments[]
+  provider      Provider   @default(google)
   isPremium     Boolean    @default(false)
   validTill     DateTime?
   createdAt     DateTime   @default(now())
@@ -70,4 +71,9 @@ enum PaymentStatus {
   PENDING
   SUCCESS
   FAILED
+}
+
+enum Provider {
+  google
+  github
 }

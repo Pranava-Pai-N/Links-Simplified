@@ -33,7 +33,8 @@ export const authOptions: NextAuthOptions = {
             data: {
               name: user.name,
               emailId: user.email,
-              profileImage: user.image
+              profileImage: user.image,
+              provider : "google"
             },
           });
         } catch (error) {
@@ -54,7 +55,8 @@ export const authOptions: NextAuthOptions = {
             data: {
               name: user.name,
               emailId: user.email,
-              profileImage: user.image
+              profileImage: user.image,
+              provider : "github"
             },
           });
         } catch (error) {
