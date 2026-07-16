@@ -23,12 +23,6 @@ export default function Footer() {
 
         <div className="flex items-center gap-6 order-2 md:order-3">
           <div className="flex gap-4 text-xs font-medium text-slate-500">
-            <Link href="/" className="hover:text-slate-800 transition-colors">
-              Privacy
-            </Link>
-            <Link href="/" className="hover:text-slate-800 transition-colors">
-              Terms
-            </Link>
             <Link
               href="/premium"
               className="text-amber-600 hover:text-amber-700 font-semibold transition-colors"

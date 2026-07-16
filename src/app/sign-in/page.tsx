@@ -1,4 +1,5 @@
 import SignInForm from "@/components/(auth)/signinForm";
+import Link from "next/link";
 
 export default function Page() {
   return (
@@ -20,21 +21,8 @@ export default function Page() {
         </div>
 
         <p className="text-center text-xs text-slate-400 px-4">
-          By clicking continue, you agree to our{" "}
-          <a
-            href="#"
-            className="underline underline-offset-4 hover:text-slate-600 transition-colors"
-          >
-            Terms of Service
-          </a>{" "}
-          and{" "}
-          <a
-            href="#"
-            className="underline underline-offset-4 hover:text-slate-600 transition-colors"
-          >
-            Privacy Policy
-          </a>
-          .
+          By clicking continue, you agree to provide{" "}
+          your details to the website as provided by the provider.
         </p>
       </div>
     </div>
