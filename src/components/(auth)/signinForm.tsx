@@ -8,7 +8,9 @@ import { Loader2 } from "lucide-react";
 type AuthProvider = "google" | "github";
 
 export default function SignInForm() {
-  const [loadingProvider, setLoadingProvider] = useState<AuthProvider | null>(null);
+  const [loadingProvider, setLoadingProvider] = useState<AuthProvider | null>(
+    null,
+  );
 
   const handleSignIn = async (provider: AuthProvider) => {
     try {
@@ -81,7 +83,11 @@ export default function SignInForm() {
           </div>
         ) : (
           <div className="flex items-center justify-center gap-2">
-            <svg className="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="h-4 w-4 shrink-0"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 fillRule="evenodd"
                 clipRule="evenodd"

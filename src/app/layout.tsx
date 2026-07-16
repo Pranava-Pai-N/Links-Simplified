@@ -18,7 +18,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "URL Shortener",
-  description: "Links Simplified is a production-style URL shortener built with Next.js, Prisma, NextAuth, and PostgreSQL. It is designed to feel like a real SaaS product with authentication, link management, premium upgrades, and payment integration.",
+  description:
+    "Links Simplified is a production-style URL shortener built with Next.js, Prisma, NextAuth, and PostgreSQL. It is designed to feel like a real SaaS product with authentication, link management, premium upgrades, and payment integration.",
   icons: {
     icon: "/url.svg",
   },

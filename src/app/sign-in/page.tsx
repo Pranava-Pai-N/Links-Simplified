@@ -10,9 +10,11 @@ export default function Page() {
             linear-gradient(to right, #e2e8f0 1px, transparent 1px),
             linear-gradient(to bottom, #e2e8f0 1px, transparent 1px)
           `,
-          backgroundSize: '4rem 4rem',
-          maskImage: 'radial-gradient(ellipse 60% 50% at 50% 50%, #000 70%, transparent 100%)',
-          WebkitMaskImage: 'radial-gradient(ellipse 60% 50% at 50% 50%, #000 70%, transparent 100%)'
+          backgroundSize: "4rem 4rem",
+          maskImage:
+            "radial-gradient(ellipse 60% 50% at 50% 50%, #000 70%, transparent 100%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse 60% 50% at 50% 50%, #000 70%, transparent 100%)",
         }}
       />
 
@@ -31,7 +33,8 @@ export default function Page() {
         </div>
 
         <p className="text-center text-xs text-slate-400 leading-relaxed max-w-[320px] mx-auto px-4">
-          By clicking continue, you authorize sharing your account profile information.
+          By clicking continue, you authorize sharing your account profile
+          information.
         </p>
       </div>
     </div>

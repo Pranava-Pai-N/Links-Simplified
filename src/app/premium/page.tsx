@@ -269,7 +269,7 @@ function PremiumPage() {
                     "Only 1 Link per account",
                     "Standard Custom Domain Support",
                     "Basic Total Click Counter",
-                    "No analytics dashboard"
+                    "No analytics dashboard",
                   ].map((item, i) => (
                     <li
                       key={i}
@@ -361,10 +361,11 @@ function PremiumPage() {
                 <Button
                   onClick={handleUpgrade}
                   disabled={isPremium || isLoadingUser}
-                  className={`w-full py-6 rounded-2xl font-semibold transition-all shadow-md active:scale-[0.98] flex items-center justify-center gap-2 ${isPremium
-                    ? "bg-emerald-600 hover:bg-emerald-600 cursor-not-allowed text-white shadow-emerald-600/10"
-                    : "bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white shadow-indigo-600/10 hover:shadow-indigo-600/20"
-                    }`}
+                  className={`w-full py-6 rounded-2xl font-semibold transition-all shadow-md active:scale-[0.98] flex items-center justify-center gap-2 ${
+                    isPremium
+                      ? "bg-emerald-600 hover:bg-emerald-600 cursor-not-allowed text-white shadow-emerald-600/10"
+                      : "bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white shadow-indigo-600/10 hover:shadow-indigo-600/20"
+                  }`}
                 >
                   {isLoadingUser ? (
                     <>

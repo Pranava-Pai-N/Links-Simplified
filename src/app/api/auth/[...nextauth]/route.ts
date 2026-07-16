@@ -11,8 +11,8 @@ export const authOptions: NextAuthOptions = {
     }),
     GitHubProvider({
       clientId: process.env.GITHUB_ID ?? "",
-      clientSecret: process.env.GITHUB_SECRET ?? ""
-    })
+      clientSecret: process.env.GITHUB_SECRET ?? "",
+    }),
   ],
   session: {
     maxAge: 60 * 60, // 1 hour
@@ -39,8 +39,7 @@ export const authOptions: NextAuthOptions = {
           console.error("Database registration failed via google:", error);
           return false;
         }
-      }
-      else if (account?.provider === "github" && user.email) {
+      } else if (account?.provider === "github" && user.email) {
         try {
           const existingUser = await prisma.user.findFirst({
             where: { emailId: user.email },
@@ -56,7 +55,6 @@ export const authOptions: NextAuthOptions = {
               emailId: user.email,
             },
           });
-
         } catch (error) {
           console.error("Database registration failed via github:", error);
           return false;

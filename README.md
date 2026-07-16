@@ -74,8 +74,8 @@ Make sure you have the following installed:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Pranava-Pai-N/Url-Shortener.git
-cd url-shortener
+git clone https://github.com/Pranava-Pai-N/Links-Simplified
+cd Links-Simplified
 ```
 
 ### 2. Install dependencies
@@ -123,7 +123,7 @@ npm run format   # format the codebase
 The project is designed to be deployed on Vercel with a PostgreSQL database.
 
 <p align="center">
-  <a href="https://links-simplified.vercel.app/" target="_blank" rel="noopener noreferrer">
+  <a href="https://links-simplified.vercel.app" target="_blank" rel="noopener noreferrer">
     <img src="https://img.shields.io/badge/Click%20For%20Demo-Links%20Simplified-00C7B7?style=for-the-badge&logo=vercel&logoColor=white" alt="Click for Demo" />
   </a>
 </p>
