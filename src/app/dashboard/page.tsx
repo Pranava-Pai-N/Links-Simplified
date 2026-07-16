@@ -193,7 +193,7 @@ export default function ShortenerDashboard() {
           </Button>
         </div>
 
-        {!isPremiumUser && (
+        {!isPremiumUser && showPremiumPrompt && (
           <div className="bg-linear-to-r from-amber-50 to-orange-50 border border-amber-200 p-6 rounded-xl shadow-sm transition-all animate-in fade-in slide-in-from-top-2 duration-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-amber-800 font-semibold text-sm">
