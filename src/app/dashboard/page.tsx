@@ -13,6 +13,10 @@ import {
   Calendar,
   Crown,
   IndianRupeeIcon,
+  QrCodeIcon,
+  X,
+  Download,
+  CopyIcon
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -20,6 +24,7 @@ import { toast } from "sonner";
 import { ShortLink } from "@/lib/types/shortLink";
 import { type User } from "@/lib/types/user";
 import React, { useEffect, useState } from "react";
+import qrcode from "qrcode";
 
 export default function ShortenerDashboard() {
   const { data: session, status } = useSession();
@@ -28,8 +33,9 @@ export default function ShortenerDashboard() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [user_details, setUser_details] = useState<User | null>(null);
+  const [_user_details, setUser_details] = useState<User | null>(null);
   const [isPremiumUser, setisPremiumUser] = useState<boolean>(false);
+  const [activeQr, setActiveQr] = useState<{ code: string; slug: string } | null>(null);
 
   const [urlInput, setUrlInput] = useState("");
   const [customDomain, setCustomDomain] = useState("");
@@ -76,6 +82,27 @@ export default function ShortenerDashboard() {
   useEffect(() => {
     fetchDashBoardData();
   }, []);
+
+  const qrCodeGenerator = (redirectURL: string, slug: string) => {
+    qrcode.toDataURL(redirectURL, { width: 300, margin: 2 })
+      .then((dataUrl) => {
+        setActiveQr({ code: dataUrl, slug });
+      })
+      .catch(() => toast.error("Failed to generate QR code for short URL"));
+  };
+
+  const downloadQrCode = () => {
+    if (!activeQr)
+      return;
+
+    const link = document.createElement("a");
+    link.href = activeQr.code;
+    link.download = `qrcode-${activeQr.slug}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
 
   const handleToggleCreateForm = () => {
     if (!isPremiumUser && !isCreateOpen && links.length >= 1) {
@@ -371,7 +398,7 @@ export default function ShortenerDashboard() {
                         </>
                       )}
                     </Button>
-                    <a href={link.redirectURL} target="_blank" rel="noreferrer">
+                    <Link href={link.redirectURL} target="_blank" rel="noreferrer">
                       <Button
                         variant="outline"
                         size="icon"
@@ -379,7 +406,16 @@ export default function ShortenerDashboard() {
                       >
                         <ExternalLink className="h-3.5 w-3.5" />
                       </Button>
-                    </a>
+                    </Link>
+
+                    <Button
+                      onClick={() => qrCodeGenerator(link.redirectURL, displaySlug)}
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 text-slate-400 hover:text-slate-600 border-slate-200"
+                    >
+                      <QrCodeIcon className="h-3.5 w-3.5" />
+                    </Button>
                   </div>
                 </div>
               );
@@ -387,6 +423,50 @@ export default function ShortenerDashboard() {
           )}
         </div>
       </main>
+
+      {activeQr && (
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-50 animate-in fade-in duration-150">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-xl border border-slate-100 flex flex-col items-center relative animate-in zoom-in-95 duration-150">
+            <button
+              onClick={() => setActiveQr(null)}
+              className="absolute top-4 right-4 p-1 rounded-lg text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            <h3 className="text-base font-bold text-slate-900 mt-2 mb-1">
+              Generated QR Code
+            </h3>
+            <div className="flex items-center justify-center gap-1.5 mb-6 max-w-full">
+              <p className="text-xs text-slate-400 font-medium truncate max-w-55">
+                {process.env.NEXT_PUBLIC_REDIRECT_URL}/{activeQr.slug}
+              </p>
+              <button
+                onClick={() => copyToClipboard(`${process.env.NEXT_PUBLIC_REDIRECT_URL}/${activeQr.slug}`, activeQr.slug)}
+                className="text-slate-400 hover:text-slate-600 transition-colors p-0.5 rounded-md hover:bg-slate-50 shrink-0"
+              >
+                <CopyIcon className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-6 shadow-inner">
+              <img
+                src={activeQr.code}
+                alt="Shortened URL QR Code"
+                className="w-48 h-48 block rounded-lg"
+              />
+            </div>
+
+            <Button
+              onClick={downloadQrCode}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white gap-2 font-medium py-2.5 rounded-xl shadow-xs transition-all"
+            >
+              <Download className="h-4 w-4" />
+              Download Image
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
