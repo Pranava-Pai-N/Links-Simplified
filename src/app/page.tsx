@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Check, Loader2, ArrowRight } from "lucide-react";
+import { ArrowRight, Check, Copy, Loader2, } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -118,6 +118,7 @@ export default function SimpleShortener() {
 
         {session && (
           <button
+            type="button"
             onClick={() => router.push("/dashboard")}
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 group transition-colors"
           >

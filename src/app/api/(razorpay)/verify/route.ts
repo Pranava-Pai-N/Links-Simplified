@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { prisma } from "@/lib/prisma";
+import { type NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import { prisma } from "@/lib/prisma";
 
 const generatedSignature = (
   razorpayOrderId: string,
@@ -10,7 +10,7 @@ const generatedSignature = (
 ) => {
   return crypto
     .createHmac("sha256", secret_key)
-    .update(razorpayOrderId + "|" + razorpayPaymentId)
+    .update(`${razorpayOrderId}|${razorpayPaymentId}`)
     .digest("hex");
 };
 

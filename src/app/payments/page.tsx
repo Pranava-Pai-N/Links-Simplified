@@ -1,8 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import axios from "axios";
-import { toast } from "sonner";
 import {
   CreditCard,
   Search,
@@ -13,8 +11,10 @@ import {
   Loader2,
   MoveLeftIcon,
 } from "lucide-react";
-import { type Payment } from "@/lib/types/payments";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import type { Payment } from "@/lib/types/payments";
 
 export default function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -174,7 +174,7 @@ export default function PaymentsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                  {filteredPayments.map((payment, index) => (
+                  {filteredPayments.map((payment : Payment, index : number) => (
                     <tr
                       key={index}
                       className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors"

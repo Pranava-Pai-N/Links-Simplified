@@ -1,7 +1,7 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = `${process.env.REDIRECT_URL!}`;
+  const baseUrl = `${process.env.REDIRECT_URL}`;
 
   return {
     rules: {

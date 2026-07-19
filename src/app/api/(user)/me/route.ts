@@ -1,8 +1,8 @@
-import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { NextResponse, NextRequest } from "next/server";
+import { prisma } from "@/lib/prisma";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession();
     const userEmail = session?.user?.email;
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
-    console.log("Error fetching user");
+    console.log("Error fetching user",error);
     return NextResponse.json(
       {
         success: false,

@@ -16,7 +16,7 @@ import {
   QrCodeIcon,
   X,
   Download,
-  CopyIcon
+  CopyIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,10 @@ export default function ShortenerDashboard() {
   const [loading, setLoading] = useState(false);
   const [_user_details, setUser_details] = useState<User | null>(null);
   const [isPremiumUser, setisPremiumUser] = useState<boolean>(false);
-  const [activeQr, setActiveQr] = useState<{ code: string; slug: string } | null>(null);
+  const [activeQr, setActiveQr] = useState<{
+    code: string;
+    slug: string;
+  } | null>(null);
 
   const [urlInput, setUrlInput] = useState("");
   const [customDomain, setCustomDomain] = useState("");
@@ -84,7 +87,8 @@ export default function ShortenerDashboard() {
   }, []);
 
   const qrCodeGenerator = (redirectURL: string, slug: string) => {
-    qrcode.toDataURL(redirectURL, { width: 300, margin: 2 })
+    qrcode
+      .toDataURL(redirectURL, { width: 300, margin: 2 })
       .then((dataUrl) => {
         setActiveQr({ code: dataUrl, slug });
       })
@@ -92,8 +96,7 @@ export default function ShortenerDashboard() {
   };
 
   const downloadQrCode = () => {
-    if (!activeQr)
-      return;
+    if (!activeQr) return;
 
     const link = document.createElement("a");
     link.href = activeQr.code;
@@ -102,7 +105,6 @@ export default function ShortenerDashboard() {
     link.click();
     document.body.removeChild(link);
   };
-
 
   const handleToggleCreateForm = () => {
     if (!isPremiumUser && !isCreateOpen && links.length >= 1) {
@@ -398,7 +400,11 @@ export default function ShortenerDashboard() {
                         </>
                       )}
                     </Button>
-                    <Link href={link.redirectURL} target="_blank" rel="noreferrer">
+                    <Link
+                      href={link.redirectURL}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       <Button
                         variant="outline"
                         size="icon"
@@ -409,7 +415,9 @@ export default function ShortenerDashboard() {
                     </Link>
 
                     <Button
-                      onClick={() => qrCodeGenerator(link.redirectURL, displaySlug)}
+                      onClick={() =>
+                        qrCodeGenerator(link.redirectURL, displaySlug)
+                      }
                       variant="outline"
                       size="icon"
                       className="h-8 w-8 text-slate-400 hover:text-slate-600 border-slate-200"
@@ -442,7 +450,12 @@ export default function ShortenerDashboard() {
                 {process.env.NEXT_PUBLIC_REDIRECT_URL}/{activeQr.slug}
               </p>
               <button
-                onClick={() => copyToClipboard(`${process.env.NEXT_PUBLIC_REDIRECT_URL}/${activeQr.slug}`, activeQr.slug)}
+                onClick={() =>
+                  copyToClipboard(
+                    `${process.env.NEXT_PUBLIC_REDIRECT_URL}/${activeQr.slug}`,
+                    activeQr.slug,
+                  )
+                }
                 className="text-slate-400 hover:text-slate-600 transition-colors p-0.5 rounded-md hover:bg-slate-50 shrink-0"
               >
                 <CopyIcon className="w-3.5 h-3.5" />
