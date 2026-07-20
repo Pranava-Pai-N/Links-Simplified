@@ -1,22 +1,25 @@
 "use client";
 
-import { ArrowRight, Check, Copy, Loader2, } from "lucide-react";
+import { ArrowRight, Check, Copy, Loader2, ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import Link from "next/link";
 
 export default function SimpleShortener() {
-  const [url, setUrl] = useState("");
-  const [shortened, setShortened] = useState("");
-  const [copied, setCopied] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [url, setUrl] = useState<string>("");
+  const [shortened, setShortened] = useState<string>("");
+  const [redirectURL, setRediectURL] = useState<string>("");
+  const [copied, setCopied] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { data: session } = useSession();
   const router = useRouter();
 
-  const handleShorten = (e: React.FormEvent) => {
+  const handleShorten = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!url) return;
 
@@ -26,17 +29,32 @@ export default function SimpleShortener() {
       return;
     }
 
-    setLoading(true);
-    setTimeout(() => {
-      setShortened(
-        `${process.env.NEXT_PUBLIC_REDIRECT_URL}/${Math.random().toString(36).substring(2, 7)}`,
-      );
+    try {
+      setLoading(true);
+      const response = await axios.post("/api/shortener", {
+        originalURL: url,
+      });
+
+      const responseData = response.data.data;
+
+      setShortened(responseData.redirectURL);
+      setRediectURL(responseData.redirectURL);
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error creating shortURL");
+      }
+    } finally {
       setLoading(false);
-    }, 700);
+    }
   };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(shortened);
+    toast.success("Copied url to clipboard successfully");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -88,30 +106,43 @@ export default function SimpleShortener() {
           </form>
 
           {shortened && (
-            <div className="mt-3 bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-200">
-              <span className="font-mono text-sm font-medium text-blue-600 truncate pr-4">
+            <div className="mt-3 bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2 duration-200">
+              <span className="font-mono text-sm font-medium text-blue-600 truncate min-w-0">
                 {shortened}
               </span>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleCopy}
-                className="h-8 gap-1.5 text-slate-600 hover:text-slate-900 border-slate-200 bg-white shadow-xs active:scale-[0.97] transition-all whitespace-nowrap"
-              >
-                {copied ? (
-                  <>
-                    <Check className="h-3.5 w-3.5 text-emerald-600" />
-                    <span className="text-emerald-600 font-medium">
-                      Copied!
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="h-3.5 w-3.5" />
-                    <span>Copy</span>
-                  </>
-                )}
-              </Button>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleCopy}
+                  className="h-8 gap-1.5 flex-1 sm:flex-none text-slate-600 hover:text-slate-900 border-slate-200 bg-white shadow-xs active:scale-[0.97] transition-all whitespace-nowrap"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="h-3.5 w-3.5 text-emerald-600" />
+                      <span className="text-emerald-600 font-medium">
+                        Copied!
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-3.5 w-3.5" />
+                      <span>Copy</span>
+                    </>
+                  )}
+                </Button>
+
+                <Link
+                  href={redirectURL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="h-8 px-3 text-xs inline-flex items-center justify-center gap-1.5 flex-1 sm:flex-none rounded-md font-medium text-slate-600 hover:text-slate-900 border border-slate-200 bg-white shadow-xs active:scale-[0.97] transition-all whitespace-nowrap"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  <span>Open</span>
+                </Link>
+              </div>
             </div>
           )}
         </div>

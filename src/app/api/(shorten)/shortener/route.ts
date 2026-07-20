@@ -55,6 +55,11 @@ export async function POST(request: NextRequest) {
 
     const user = await prisma.user.findFirst({
       where: { emailId: session?.user?.email },
+      select: {
+        id: true,
+        isPremium: true,
+        generatedUrls: true,
+      },
     });
 
     if (!user) {
@@ -62,6 +67,18 @@ export async function POST(request: NextRequest) {
         { success: false, message: "User not found" },
         { status: 401 },
       );
+    }
+
+    if (!user.isPremium && user.generatedUrls.length > 0) {
+      // Free users can create only 1 link
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Free limit reached. Upgrade to Premium for unlimited URL creation.",
+        },
+        { status: 402 },
+      ); // Payment Required code
     }
 
     let shortId: string | null = null;

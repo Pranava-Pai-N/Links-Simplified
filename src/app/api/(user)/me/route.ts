@@ -39,7 +39,7 @@ export async function GET() {
       { status: 200 },
     );
   } catch (error) {
-    console.log("Error fetching user",error);
+    console.log("Error fetching user", error);
     return NextResponse.json(
       {
         success: false,

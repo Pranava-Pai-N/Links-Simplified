@@ -1,37 +1,43 @@
 "use client";
 
-import { Heart } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full border-t border-slate-200 bg-white mt-auto">
-      <div className="max-w-5xl w-full mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <span className="font-semibold text-slate-900 tracking-tight text-sm">
-            Links Simplified
+    <footer className="w-full border-t border-slate-100 bg-white py-6 mt-auto">
+      <div className="max-w-7xl w-full mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+        <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-900">
+          <span>Links Simplified</span>
+          <span className="text-slate-200 font-normal" aria-hidden="true">
+            |
+          </span>
+          <span className="text-xs font-normal text-slate-500">
+            &copy; {currentYear} All Rights Reserved
           </span>
         </div>
 
-        <p className="text-xs text-slate-400 flex items-center gap-1 order-3 md:order-2">
-          &copy; {currentYear} Links Simplified. Built with
-          <Heart className="h-3 w-3 text-rose-500 fill-rose-500 inline mx-0.5" />
-          for a simplifying urls.
-        </p>
+        <div className="flex items-center gap-4 font-medium">
+          <Link
+            href="https://github.com/Pranava-Pai-N/Links-Simplified/issues"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-slate-800 transition-colors"
+          >
+            GitHub Support
+          </Link>
 
-        <div className="flex items-center gap-6 order-2 md:order-3">
-          <div className="flex gap-4 text-xs font-medium text-slate-500">
-            <Link
-              href="/premium"
-              className="text-amber-600 hover:text-amber-700 font-semibold transition-colors"
-            >
-              Go Premium
-            </Link>
-          </div>
+          <span className="text-slate-300" aria-hidden="true">
+            •
+          </span>
 
-          <div className="h-4 w-px bg-slate-200 hidden sm:block"></div>
+          <Link
+            href="/premium"
+            className="text-indigo-600 hover:text-indigo-700 transition-colors tracking-wide font-semibold"
+          >
+            Upgrade to Premium
+          </Link>
         </div>
       </div>
     </footer>

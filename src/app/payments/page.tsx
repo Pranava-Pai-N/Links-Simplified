@@ -174,7 +174,7 @@ export default function PaymentsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                  {filteredPayments.map((payment : Payment, index : number) => (
+                  {filteredPayments.map((payment: Payment, index: number) => (
                     <tr
                       key={index}
                       className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors"
