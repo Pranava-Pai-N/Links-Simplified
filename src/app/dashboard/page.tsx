@@ -27,7 +27,7 @@ import React, { useEffect, useState } from "react";
 import qrcode from "qrcode";
 
 export default function ShortenerDashboard() {
-  const { data: session, status } = useSession();
+  const { data: _session, status } = useSession();
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);

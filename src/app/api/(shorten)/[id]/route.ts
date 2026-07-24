@@ -32,7 +32,8 @@ export async function POST(request: NextRequest, { params }: routeParams) {
         },
       });
 
-      if (!link) return null;
+      if (!link)
+        return null;
 
       const updated = await tx.urls.update({
         where: { id: link.id },
@@ -66,7 +67,7 @@ export async function POST(request: NextRequest, { params }: routeParams) {
     }
 
     return NextResponse.json({ originalURL: destinationUrl });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Redirect error:", error);
     return NextResponse.json(
       { success: false, error: "Internal Server Error" },

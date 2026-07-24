@@ -37,7 +37,7 @@ export async function GET(_req: Request) {
       { success: true, message: "Urls retrieved successfully", createdurls },
       { status: 200 },
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Failed to fetch user analytics:", error);
     return NextResponse.json(
       {

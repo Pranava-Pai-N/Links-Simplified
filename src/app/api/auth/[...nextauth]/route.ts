@@ -38,8 +38,8 @@ export const authOptions: NextAuthOptions = {
               provider: account.provider as AuthProvider,
             }
           });
-        } catch (error) {
-          console.error("Database registration failed via google:", error);
+        } catch (error: any) {
+          console.error(`Authentication via ${account.provider} failed : `, error);
           return false;
         }
       }

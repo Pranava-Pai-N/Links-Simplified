@@ -5,15 +5,15 @@ import { nanoid } from "nanoid";
 import { prisma } from "@/lib/prisma";
 
 const instance = new razorpay({
-  key_id: process.env.TEST_RAZORPAY_API_KEY!,
-  key_secret: process.env.TEST_RAZORPAY_KEY_SECRET!,
+  key_id: process.env.TEST_RAZORPAY_API_KEY ?? "",
+  key_secret: process.env.TEST_RAZORPAY_KEY_SECRET ?? "",
 });
 
 export async function GET() {
   return NextResponse.json(
     {
       success: true,
-      message: "Razorpay routes will be added here",
+      message: "Please use proper methods to access the payment functionality",
     },
     {
       status: 200,
