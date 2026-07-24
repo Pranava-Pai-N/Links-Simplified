@@ -2,6 +2,7 @@ import NextAuth, { type NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import { prisma } from "@/lib/prisma";
+import { type AuthProvider } from "@/components/(auth)/signinForm";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -19,10 +20,10 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn({ user, account }) {
-      if (account?.provider === "google" && user.email) {
+      if (account?.provider && user.email) {
         try {
           const existingUser = await prisma.user.findFirst({
-            where: { emailId: user.email },
+            where: { emailId: user.email }
           });
 
           if (existingUser) {
@@ -34,33 +35,11 @@ export const authOptions: NextAuthOptions = {
               name: user.name,
               emailId: user.email,
               profileImage: user.image,
-              provider: "google",
-            },
+              provider: account.provider as AuthProvider,
+            }
           });
         } catch (error) {
           console.error("Database registration failed via google:", error);
-          return false;
-        }
-      } else if (account?.provider === "github" && user.email) {
-        try {
-          const existingUser = await prisma.user.findFirst({
-            where: { emailId: user.email },
-          });
-
-          if (existingUser) {
-            return true;
-          }
-
-          const _response = await prisma.user.create({
-            data: {
-              name: user.name,
-              emailId: user.email,
-              profileImage: user.image,
-              provider: "github",
-            },
-          });
-        } catch (error) {
-          console.error("Database registration failed via github:", error);
           return false;
         }
       }

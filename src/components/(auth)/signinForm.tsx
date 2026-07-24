@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
-type AuthProvider = "google" | "github";
+export type AuthProvider = "google" | "github";
 
 export default function SignInForm() {
   const [loadingProvider, setLoadingProvider] = useState<AuthProvider | null>(
