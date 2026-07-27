@@ -38,7 +38,7 @@ export async function GET() {
       },
       { status: 200 },
     );
-  } catch (error : any) {
+  } catch (error: any) {
     console.log("Error fetching user", error);
     return NextResponse.json(
       {

@@ -23,7 +23,7 @@ export const authOptions: NextAuthOptions = {
       if (account?.provider && user.email) {
         try {
           const existingUser = await prisma.user.findFirst({
-            where: { emailId: user.email }
+            where: { emailId: user.email },
           });
 
           if (existingUser) {
@@ -36,10 +36,13 @@ export const authOptions: NextAuthOptions = {
               emailId: user.email,
               profileImage: user.image,
               provider: account.provider as AuthProvider,
-            }
+            },
           });
         } catch (error: any) {
-          console.error(`Authentication via ${account.provider} failed : `, error);
+          console.error(
+            `Authentication via ${account.provider} failed : `,
+            error,
+          );
           return false;
         }
       }

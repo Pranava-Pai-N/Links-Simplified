@@ -16,8 +16,7 @@ export default function LinkAnalytics() {
 
   useEffect(() => {
     const handleRedirect = async () => {
-      if (!id || id === "undefined")
-        return;
+      if (!id || id === "undefined") return;
 
       try {
         setLoading(true);

@@ -1,8 +1,26 @@
 "use client";
 
 import Link from "next/link";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { type User } from "@/lib/types/user";
 
 export default function Footer() {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get("/api/me");
+        console.log(response.data.user);
+        setUser(response.data.user);
+      } catch (error) {
+        setUser(null);
+      }
+    };
+
+    fetchUser();
+  }, []);
   const currentYear = new Date().getFullYear();
 
   return (
@@ -32,12 +50,14 @@ export default function Footer() {
             •
           </span>
 
-          <Link
-            href="/premium"
-            className="text-indigo-600 hover:text-indigo-700 transition-colors tracking-wide font-semibold"
-          >
-            Upgrade to Premium
-          </Link>
+          {(!user?.isPremium || user === null) && (
+            <Link
+              href="/premium"
+              className="text-indigo-600 hover:text-indigo-700 transition-colors tracking-wide font-semibold"
+            >
+              Upgrade to Premium
+            </Link>
+          )}
         </div>
       </div>
     </footer>

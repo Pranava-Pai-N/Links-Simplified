@@ -112,7 +112,7 @@ function PremiumPage() {
       }
 
       const paymentOptions = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_API_KEY!,
+        key: process.env.NEXT_PUBLIC_RAZORPAY_API_KEY ?? "",
         amount: amount * 100, // IN PAISE
         currency: "INR",
         name: "Links Simpified - Premium Subscription",

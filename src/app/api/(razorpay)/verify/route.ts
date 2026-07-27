@@ -29,7 +29,8 @@ export async function POST(request: NextRequest) {
         },
       );
     }
-    const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = await request.json();
+    const { razorpayOrderId, razorpayPaymentId, razorpaySignature } =
+      await request.json();
 
     const secret_key = process.env.TEST_RAZORPAY_KEY_SECRET;
 
