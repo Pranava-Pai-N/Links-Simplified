@@ -20,7 +20,7 @@ export default function LinkAnalytics() {
 
       try {
         setLoading(true);
-        const response = await axios.post(`/api/${id}`);
+        const response = await axios.post(`/api/v1/${id}`);
 
         if (response.data?.originalURL) {
           window.location.href = response.data.originalURL;

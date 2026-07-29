@@ -11,8 +11,7 @@ export default function Footer() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get("/api/me");
-        console.log(response.data.user);
+        const response = await axios.get("/api/v1/me");
         setUser(response.data.user);
       } catch (error) {
         setUser(null);

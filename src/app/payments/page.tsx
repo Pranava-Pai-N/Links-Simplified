@@ -25,7 +25,7 @@ export default function PaymentsPage() {
     const handleUserPaymentDetails = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("/api/payments");
+        const response = await axios.get("/api/v1/payments");
 
         if (response.data?.success && response.data?.details) {
           const extractedPayments = response.data.details.flatMap(

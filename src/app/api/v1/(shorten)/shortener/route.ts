@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { prisma } from "@/lib/prisma";
 import inputValidation, { type userInput } from "@/lib/validations/customUrls";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "../../../auth/[...nextauth]/route";
 
 export async function GET() {
   return NextResponse.json(

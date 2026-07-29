@@ -17,6 +17,7 @@ import {
   X,
   Download,
   CopyIcon,
+  Trash2
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -52,8 +53,8 @@ export default function ShortenerDashboard() {
       setLoading(true);
 
       const [analyticsRes, userRes] = await Promise.all([
-        axios.get("/api/links"),
-        axios.get("/api/me"),
+        axios.get("/api/v1/links"),
+        axios.get("/api/v1/me"),
       ]);
 
       if (analyticsRes.data?.createdurls) {
@@ -128,7 +129,7 @@ export default function ShortenerDashboard() {
     setIsSubmitting(true);
     try {
       setLoading(true);
-      await axios.post("/api/shortener", {
+      await axios.post("/api/v1/shortener", {
         originalURL: urlInput,
         custom: customDomain,
       });
@@ -165,6 +166,27 @@ export default function ShortenerDashboard() {
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
   };
+
+
+  const handleUrlDelete = async (id: string) => {
+    try {
+      setLoading(true);
+
+      const response = await axios.delete(`/api/v1/${id}`);
+
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+      }
+      fetchDashBoardData();
+    } catch (error: any) {
+      console.log("Error deleting the url. Please try again later");
+      toast.error(error?.message || "Error deleting the link")
+    }
+    finally {
+      setLoading(false);
+    }
+  }
 
   if (status === "loading") {
     return (
@@ -371,8 +393,17 @@ export default function ShortenerDashboard() {
                         <Calendar className="h-3 w-3" />
                         {formattedDate}
                       </span>
-                      {!link.active && (
-                        <span className="bg-rose-50 text-rose-600 px-1.5 py-0.5 rounded text-[10px] font-semibold">
+                      {link.active ? (
+                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                          <span className="relative flex h-1.5 w-1.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                          </span>
+                          Active
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-500 border border-slate-200">
+                          <span className="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
                           Inactive
                         </span>
                       )}
@@ -423,6 +454,16 @@ export default function ShortenerDashboard() {
                       className="h-8 w-8 text-slate-400 hover:text-slate-600 border-slate-200"
                     >
                       <QrCodeIcon className="h-3.5 w-3.5" />
+                    </Button>
+
+                    <Button
+                      onClick={() => handleUrlDelete(link.id)}
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 text-slate-400 hover:text-rose-600 hover:bg-rose-50 hover:border-rose-200 border-slate-200 transition-colors"
+                      title="Delete short link"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                   </div>
                 </div>

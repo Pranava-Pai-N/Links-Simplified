@@ -34,7 +34,7 @@ function PremiumPage() {
   useEffect(() => {
     const getUserDetails = async () => {
       try {
-        const userData = await axios.get("/api/me");
+        const userData = await axios.get("/api/v1/me");
         const user = userData.data.user;
 
         if (user && user.isPremium) {
@@ -72,7 +72,7 @@ function PremiumPage() {
 
   const createOrder = async () => {
     try {
-      const orderObject = await axios.post("/api/checkout", {
+      const orderObject = await axios.post("/api/v1/checkout", {
         amount: amount * 100,
       });
 
@@ -122,7 +122,7 @@ function PremiumPage() {
 
         handler: async function (response: any) {
           try {
-            const verifyPayment = await axios.post("/api/verify", {
+            const verifyPayment = await axios.post("/api/v1/verify", {
               razorpayOrderId: response.razorpay_order_id,
               razorpayPaymentId: response.razorpay_payment_id,
               razorpaySignature: response.razorpay_signature,
