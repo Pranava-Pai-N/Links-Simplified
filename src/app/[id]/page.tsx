@@ -20,10 +20,17 @@ export default function LinkAnalytics() {
 
       try {
         setLoading(true);
+        setError(null);
         const response = await axios.post(`/api/v1/${id}`);
 
-        if (response.data?.originalURL) {
-          window.location.href = response.data.originalURL;
+        const { originalURL, active } = response.data;
+
+        if (!active) {
+          setError("Link is not active. Please activate it again to use the resource");
+          setLoading(false);
+        }
+        else if (originalURL) {
+          window.location.href = originalURL;
         } else {
           setError("Destination URL not found.");
           setLoading(false);

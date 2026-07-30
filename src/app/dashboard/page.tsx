@@ -17,7 +17,9 @@ import {
   X,
   Download,
   CopyIcon,
-  Trash2
+  Power,
+  PowerOff,
+  Trash2,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -34,6 +36,7 @@ export default function ShortenerDashboard() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [redirectingId, setRedirectingId] = useState<string | null>(null);
   const [_user_details, setUser_details] = useState<User | null>(null);
   const [isPremiumUser, setisPremiumUser] = useState<boolean>(false);
   const [activeQr, setActiveQr] = useState<{
@@ -97,7 +100,8 @@ export default function ShortenerDashboard() {
   };
 
   const downloadQrCode = () => {
-    if (!activeQr) return;
+    if (!activeQr)
+      return;
 
     const link = document.createElement("a");
     link.href = activeQr.code;
@@ -167,6 +171,36 @@ export default function ShortenerDashboard() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  const handleExternalRedirect = async (slugOrId: string, fallbackUrl?: string) => {
+    try {
+      setRedirectingId(slugOrId);
+      const response = await axios.post(`/api/v1/${slugOrId}`);
+
+      const { active, originalURL } = response.data || {};
+
+      if (!active) {
+        toast.error("Link is inactive. Please reactivate it to use this URL.");
+        return;
+      }
+
+      const destination = originalURL || fallbackUrl;
+      if (destination) {
+        window.open(destination, "_blank", "noopener,noreferrer");
+        fetchDashBoardData();
+      } else {
+        toast.error("Destination URL not found.");
+      }
+    } catch (error: any) {
+      console.error("External redirect failed:", error);
+      toast.error(
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        "Failed to redirect to target URL.",
+      );
+    } finally {
+      setRedirectingId(null);
+    }
+  };
 
   const handleUrlDelete = async (id: string) => {
     try {
@@ -174,17 +208,34 @@ export default function ShortenerDashboard() {
 
       const response = await axios.delete(`/api/v1/${id}`);
 
-
       if (response.data.success) {
         toast.success(response.data.message);
       }
       fetchDashBoardData();
     } catch (error: any) {
       console.log("Error deleting the url. Please try again later");
-      toast.error(error?.message || "Error deleting the link")
-    }
-    finally {
+      toast.error(error?.message || "Error deleting the link");
+    } finally {
       setLoading(false);
+    }
+  };
+
+
+  const handleStatusToggle = async (id: string) => {
+    try {
+      setLoading(true);
+
+      const response = await axios.patch(`/api/v1/${id}/active`);
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        fetchDashBoardData();
+      }
+    } catch (error: any) {
+      console.log("Error changing the status of the URL. Try again later", error);
+      toast.error(error.message)
+    } finally {
+      setLoading(true);
     }
   }
 
@@ -371,7 +422,12 @@ export default function ShortenerDashboard() {
                 >
                   <div className="space-y-1 min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-semibold text-blue-600 text-sm hover:underline cursor-pointer">
+                      <span
+                        onClick={() =>
+                          handleExternalRedirect(displaySlug, link.originalURL)
+                        }
+                        className="font-semibold text-blue-600 text-sm hover:underline cursor-pointer flex items-center gap-1"
+                      >
                         {displaySlug}
                       </span>
                       <span className="text-slate-300 text-xs">|</span>
@@ -414,7 +470,12 @@ export default function ShortenerDashboard() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => copyToClipboard(link.redirectURL, link.id)}
+                      onClick={() =>
+                        copyToClipboard(
+                          `${process.env.NEXT_PUBLIC_REDIRECT_URL || ""}/${displaySlug}`,
+                          link.id,
+                        )
+                      }
                       className="h-8 gap-1.5 text-slate-600 hover:text-slate-900 border-slate-200 active:scale-[0.97] transition-all"
                     >
                       {copiedId === link.id ? (
@@ -431,29 +492,53 @@ export default function ShortenerDashboard() {
                         </>
                       )}
                     </Button>
-                    <Link
-                      href={link.redirectURL}
-                      target="_blank"
-                      rel="noreferrer"
+
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      disabled={redirectingId === displaySlug}
+                      onClick={() =>
+                        handleExternalRedirect(displaySlug, link.originalURL)
+                      }
+                      className="h-8 w-8 text-slate-400 hover:text-slate-600 border-slate-200"
+                      title="Open external link"
                     >
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8 text-slate-400 hover:text-slate-600 border-slate-200"
-                      >
+                      {redirectingId === displaySlug ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin text-blue-600" />
+                      ) : (
                         <ExternalLink className="h-3.5 w-3.5" />
-                      </Button>
-                    </Link>
+                      )}
+                    </Button>
 
                     <Button
                       onClick={() =>
-                        qrCodeGenerator(link.redirectURL, displaySlug)
+                        qrCodeGenerator(
+                          `${process.env.NEXT_PUBLIC_REDIRECT_URL || ""}/${displaySlug}`,
+                          displaySlug,
+                        )
                       }
                       variant="outline"
                       size="icon"
                       className="h-8 w-8 text-slate-400 hover:text-slate-600 border-slate-200"
                     >
                       <QrCodeIcon className="h-3.5 w-3.5" />
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleStatusToggle(link.id)}
+                      className={`h-8 w-8 border-slate-200 transition-all duration-200 ${link.active
+                        ? "text-emerald-600 bg-emerald-50/50 hover:bg-emerald-100/80 hover:text-emerald-700 border-emerald-200/80"
+                        : "text-slate-400 bg-slate-50 hover:bg-slate-100 hover:text-slate-600"
+                        }`}
+                      title={link.active ? "Click to deactivate link" : "Click to activate link"}
+                    >
+                      {link.active ? (
+                        <Power className="h-3.5 w-3.5 fill-emerald-500/20" />
+                      ) : (
+                        <PowerOff className="h-3.5 w-3.5" />
+                      )}
                     </Button>
 
                     <Button

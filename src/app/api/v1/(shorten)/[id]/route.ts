@@ -45,7 +45,10 @@ export async function POST(request: NextRequest, { params }: routeParams) {
         },
       });
 
-      return updated.originalURL;
+      return {
+          originalURL : updated.originalURL,
+          active : updated.active
+      };
     });
 
     if (!targetUrl) {
@@ -62,12 +65,12 @@ export async function POST(request: NextRequest, { params }: routeParams) {
     let destinationUrl: URL;
 
     try {
-      destinationUrl = new URL(targetUrl);
+      destinationUrl = new URL(targetUrl.originalURL);
     } catch {
-      destinationUrl = new URL(targetUrl, request.nextUrl.origin);
+      destinationUrl = new URL(targetUrl.originalURL, request.nextUrl.origin);
     }
 
-    return NextResponse.json({ originalURL: destinationUrl });
+    return NextResponse.json({ originalURL: destinationUrl.toString(), active : targetUrl.active });
   } catch (error: any) {
     console.error("Redirect error:", error);
     return NextResponse.json(
