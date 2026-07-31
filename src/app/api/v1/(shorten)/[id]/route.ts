@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth/next"
+import { getServerSession } from "next-auth/next";
 
 export interface routeParams {
   params: Promise<{
@@ -33,8 +33,7 @@ export async function POST(request: NextRequest, { params }: routeParams) {
         },
       });
 
-      if (!link)
-        return null;
+      if (!link) return null;
 
       const updated = await tx.urls.update({
         where: { id: link.id },
@@ -46,8 +45,8 @@ export async function POST(request: NextRequest, { params }: routeParams) {
       });
 
       return {
-          originalURL : updated.originalURL,
-          active : updated.active
+        originalURL: updated.originalURL,
+        active: updated.active,
       };
     });
 
@@ -70,7 +69,10 @@ export async function POST(request: NextRequest, { params }: routeParams) {
       destinationUrl = new URL(targetUrl.originalURL, request.nextUrl.origin);
     }
 
-    return NextResponse.json({ originalURL: destinationUrl.toString(), active : targetUrl.active });
+    return NextResponse.json({
+      originalURL: destinationUrl.toString(),
+      active: targetUrl.active,
+    });
   } catch (error: any) {
     console.error("Redirect error:", error);
     return NextResponse.json(
@@ -80,8 +82,7 @@ export async function POST(request: NextRequest, { params }: routeParams) {
   }
 }
 
-
-export async function DELETE(_request : NextRequest, { params }: routeParams) {
+export async function DELETE(_request: NextRequest, { params }: routeParams) {
   try {
     const resolvedParams = await params;
     const session = await getServerSession();
@@ -95,7 +96,6 @@ export async function DELETE(_request : NextRequest, { params }: routeParams) {
         { status: 401 },
       );
     }
-
 
     const id = resolvedParams.id;
 
@@ -112,8 +112,8 @@ export async function DELETE(_request : NextRequest, { params }: routeParams) {
     const link = await prisma.urls.findFirst({
       where: { id: id },
       select: {
-        user: true
-      }
+        user: true,
+      },
     });
 
     if (!link) {
@@ -130,32 +130,37 @@ export async function DELETE(_request : NextRequest, { params }: routeParams) {
       return NextResponse.json(
         {
           success: false,
-          message: "Only authorized link creators hold the permissions required to delete this resource",
+          message:
+            "Only authorized link creators hold the permissions required to delete this resource",
         },
         { status: 403 },
       );
     }
 
     await prisma.urls.delete({
-      where: { id: id }
+      where: { id: id },
     });
 
-    return NextResponse.json({
-      success: true,
-      message: "Url deleted successfully"
-    }, {
-      status: 200
-    });
-
+    return NextResponse.json(
+      {
+        success: true,
+        message: `URL deleted successfully.`,
+      },
+      {
+        status: 200,
+      },
+    );
   } catch (error) {
     console.log("Error eleting the URL. Please try again later", error);
 
-    return NextResponse.json({
-      success: false,
-      message: "Error eleting the URL. Please try again later"
-    }, {
-      status: 500
-    })
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Error eleting the URL. Please try again later",
+      },
+      {
+        status: 500,
+      },
+    );
   }
-
 }

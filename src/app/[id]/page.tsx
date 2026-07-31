@@ -26,10 +26,11 @@ export default function LinkAnalytics() {
         const { originalURL, active } = response.data;
 
         if (!active) {
-          setError("Link is not active. Please activate it again to use the resource");
+          setError(
+            "Link is not active. Please activate it again to use the resource",
+          );
           setLoading(false);
-        }
-        else if (originalURL) {
+        } else if (originalURL) {
           window.location.href = originalURL;
         } else {
           setError("Destination URL not found.");
