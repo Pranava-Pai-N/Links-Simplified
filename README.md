@@ -23,7 +23,9 @@ This project allows users to:
 - Manage their links from a personal dashboard
 - Sign in securely with Google authentication
 - Upgrade to a premium plan for advanced features
-- Complete payments through Razorpay
+- Activate links when required and manage the inactive links. 
+- Delete inactive or links which are not required. 
+- Checkout using Razorpay's safe test environment. 
 
 The app combines a polished frontend experience with a backend API and database layer that is suitable for real-world use.
 
@@ -34,6 +36,7 @@ The app combines a polished frontend experience with a backend API and database 
 - Authenticated dashboard for link management
 - Premium subscription flow with Razorpay integration
 - Payment and subscription-related user experience
+- Manage links effective - Activate, Deactivate and delete links. 
 - Responsive, modern UI built with Tailwind CSS
 
 ## Tech Stack
