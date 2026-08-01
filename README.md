@@ -36,7 +36,7 @@ The app combines a polished frontend experience with a backend API and database 
 - Authenticated dashboard for link management
 - Premium subscription flow with Razorpay integration
 - Payment and subscription-related user experience
-- Manage links effective - Activate, Deactivate and delete links. 
+- Manage links effectively - Activate, Deactivate and Delete links. 
 - Responsive, modern UI built with Tailwind CSS
 
 ## Tech Stack
